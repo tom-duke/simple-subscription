@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="stdout">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{dd-MM-yyyy-HH:mm:ss.SSS} %level [%thread]-%class:%line>>%msg%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+  <root level="info">
+    <appender-ref ref="stdout"/>
+  </root>
+</configuration>
