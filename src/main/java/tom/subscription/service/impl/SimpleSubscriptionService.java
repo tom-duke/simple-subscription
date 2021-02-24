@@ -64,6 +64,9 @@ public class SimpleSubscriptionService implements SubscriptionService {
       case WEEKLY: {
         return weeklyInvoceDates(subs, start, end);
       }
+      case MONTHLY: {
+        return monthlyInvoceDates(subs, start, end);
+      }
       default: {
         return Collections.emptyList();
       }
@@ -84,6 +87,18 @@ public class SimpleSubscriptionService implements SubscriptionService {
     while (issueDate.isBefore(end) || issueDate.isEqual(end)) {
       dates.add(DateUtil.format(issueDate));
       issueDate = issueDate.plusWeeks(1);
+    }
+    return dates;
+  }
+
+  private List<String> monthlyInvoceDates(SubscriptionEntity subs, LocalDate start, LocalDate end) {
+    LocalDate issueDate = start.withDayOfMonth(Integer.parseInt(subs.getDayOfWeekOrMonth()));
+    if (issueDate.isBefore(start))
+      issueDate = issueDate.plusMonths(1);
+    List<String> dates = new LinkedList<>();
+    while (issueDate.isBefore(end) || issueDate.isEqual(end)) {
+      dates.add(DateUtil.format(issueDate));
+      issueDate = issueDate.plusMonths(1);
     }
     return dates;
   }
