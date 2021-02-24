@@ -12,10 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class SubscriptionRequest extends BaseSubscription {
+  // MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
   private final String dayOfWeekOrMonth;
-  // Local date 24-Feb-2021
+  // Local date 24/02/2021
   private final String startDate;
-  // Local date 24-Feb-2021
+  // Local date 24/02/2021
   private final String endDate;
 
   @JsonCreator(mode = Mode.PROPERTIES)

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import tom.subscription.Constants;
+import tom.subscription.exception.SubscriptionBadReqeustException;
 import tom.subscription.model.ExceptionResponse;
 
 /**
@@ -20,17 +22,25 @@ import tom.subscription.model.ExceptionResponse;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(DateTimeException.class)
   public ResponseEntity<ExceptionResponse> handleDateTime(DateTimeException ex) {
-    return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage(), 4101));
+    return ResponseEntity.badRequest()
+        .body(new ExceptionResponse(ex.getMessage(), Constants.ERR_DATETIME));
   }
 
   @ExceptionHandler(DateTimeParseException.class)
   public ResponseEntity<ExceptionResponse> handleDateTimeParse(DateTimeParseException ex) {
-    return ResponseEntity.badRequest().body(new ExceptionResponse("Date parsing error!", 4102));
+    return ResponseEntity.badRequest().body(
+        new ExceptionResponse(Constants.ERR_MSG_DATETIME_PARSE, Constants.ERR_DATETIME_PARSE));
+  }
+
+  @ExceptionHandler(SubscriptionBadReqeustException.class)
+  public ResponseEntity<ExceptionResponse> handleSubscriptionBadRequest(
+      SubscriptionBadReqeustException ex) {
+    return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage(), ex.getCode()));
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ExceptionResponse> handleGenericException(Exception ex, WebRequest req) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(new ExceptionResponse("Unknown error!", 5000));
+        .body(new ExceptionResponse(Constants.ERR_MSG_GENERIC, Constants.ERR_GENERIC));
   }
 }

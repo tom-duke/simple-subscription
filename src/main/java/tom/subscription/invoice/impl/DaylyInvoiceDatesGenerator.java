@@ -26,7 +26,7 @@ public class DaylyInvoiceDatesGenerator implements InvoiceDatesGenerator {
     // int duration = Period.between(start, end).getDays();
     long duration = ChronoUnit.DAYS.between(subs.getStartDate(), subs.getEndDate()) + 1;
     return Stream.iterate(subs.getStartDate(), date -> date.plusDays(1)).limit(duration)
-        .map(date -> DateUtil.format(date)).collect(Collectors.toList());
+        .map(DateUtil::format).collect(Collectors.toList());
   }
 
 }
