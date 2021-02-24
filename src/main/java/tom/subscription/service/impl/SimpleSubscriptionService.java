@@ -1,10 +1,14 @@
 package tom.subscription.service.impl;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +61,9 @@ public class SimpleSubscriptionService implements SubscriptionService {
       case DAILY: {
         return dailyInvoceDates(start, end);
       }
+      case WEEKLY: {
+        return weeklyInvoceDates(subs, start, end);
+      }
       default: {
         return Collections.emptyList();
       }
@@ -64,12 +71,20 @@ public class SimpleSubscriptionService implements SubscriptionService {
   }
 
   private List<String> dailyInvoceDates(LocalDate start, LocalDate end) {
-    int duration = Period.between(start, end).getDays();
-    List<String> dates = new LinkedList<>();
-    for (int i = 0; i <= duration; i++) {
-      dates.add(DateUtil.format(start.plusDays(i)));
-    }
+    // int duration = Period.between(start, end).getDays();
+    long duration = ChronoUnit.DAYS.between(start, end) + 1;
+    return Stream.iterate(start, date -> date.plusDays(1)).limit(duration)
+        .map(date -> DateUtil.format(date)).collect(Collectors.toList());
+  }
 
+  private List<String> weeklyInvoceDates(SubscriptionEntity subs, LocalDate start, LocalDate end) {
+    LocalDate issueDate =
+        start.with(TemporalAdjusters.nextOrSame(DayOfWeek.valueOf(subs.getDayOfWeekOrMonth())));
+    List<String> dates = new LinkedList<>();
+    while (issueDate.isBefore(end) || issueDate.isEqual(end)) {
+      dates.add(DateUtil.format(issueDate));
+      issueDate = issueDate.plusWeeks(1);
+    }
     return dates;
   }
 
