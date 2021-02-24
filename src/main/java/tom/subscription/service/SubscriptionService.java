@@ -26,7 +26,7 @@ public interface SubscriptionService {
    * @return {@link SubscriptionEntity}
    */
   default SubscriptionEntity buildEntity(SubscriptionRequest req) {
-    return SubscriptionEntity.of(req.getSubscriptionType(), req.getDayOfWeekOrMonth(),
-        req.getStartDate(), req.getEndDate());
+    return SubscriptionEntity.of(req.getAmount(), req.getSubscriptionType(),
+        req.getDayOfWeekOrMonth(), req.getStartDate(), req.getEndDate());
   }
 }

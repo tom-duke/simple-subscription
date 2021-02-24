@@ -1,6 +1,8 @@
 package tom.subscription.model;
 
+import java.time.LocalDate;
 import java.util.List;
+import tom.subscription.utils.DateUtil;
 
 /**
  * A business entity.<br>
@@ -10,75 +12,47 @@ import java.util.List;
  *
  */
 public class SubscriptionEntity {
-  private long amount;
-  private String currency;
-  private SubscriptionType subType;
-  private String dayOfWeekOrMonth;
-  private String startDate;
-  private String endDate;
+  private final String amount;
+  private final SubscriptionType subType;
+  private final String dayOfWeekOrMonth;
+  private final LocalDate startDate;
+  private final LocalDate endDate;
   private List<String> invoiceDates;
 
-  private SubscriptionEntity(SubscriptionType subType, String dayOfWeekOrMonth, String startDate,
-      String endDate) {
+  private SubscriptionEntity(String amount, SubscriptionType subType, String dayOfWeekOrMonth,
+      LocalDate startDate, LocalDate endDate) {
     super();
+    this.amount = amount;
     this.subType = subType;
     this.dayOfWeekOrMonth = dayOfWeekOrMonth;
     this.startDate = startDate;
     this.endDate = endDate;
   }
 
-  public static SubscriptionEntity of(String subType, String dayOfWeekOrMonth, String startDate,
-      String endDate) {
-    return new SubscriptionEntity(SubscriptionType.valueOf(subType), dayOfWeekOrMonth, startDate,
-        endDate);
+  public static SubscriptionEntity of(String amount, String subType, String dayOfWeekOrMonth,
+      String startDate, String endDate) {
+    return new SubscriptionEntity(amount, SubscriptionType.valueOf(subType), dayOfWeekOrMonth,
+        DateUtil.parse(startDate), DateUtil.parse(endDate));
   }
 
-  public long getAmount() {
+  public String getAmount() {
     return amount;
-  }
-
-  public void setAmount(long amount) {
-    this.amount = amount;
-  }
-
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
   }
 
   public SubscriptionType getSubType() {
     return subType;
   }
 
-  public void setSubType(SubscriptionType subType) {
-    this.subType = subType;
-  }
-
   public String getDayOfWeekOrMonth() {
     return dayOfWeekOrMonth;
   }
 
-  public void setDayOfWeekOrMonth(String dayOfWeekOrMonth) {
-    this.dayOfWeekOrMonth = dayOfWeekOrMonth;
-  }
-
-  public String getStartDate() {
+  public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(String startDate) {
-    this.startDate = startDate;
-  }
-
-  public String getEndDate() {
+  public LocalDate getEndDate() {
     return endDate;
-  }
-
-  public void setEndDate(String endDate) {
-    this.endDate = endDate;
   }
 
   public List<String> getInvoiceDates() {
