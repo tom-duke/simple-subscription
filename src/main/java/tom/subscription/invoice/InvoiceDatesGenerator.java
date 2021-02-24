@@ -28,6 +28,11 @@ public interface InvoiceDatesGenerator {
     if (subs.getEndDate().isBefore(subs.getStartDate()))
       throw new SubscriptionBadReqeustException(Constants.ERR_DATETIME_RANGE,
           Constants.ERR_MSG_DATETIME_RANGE);
+
+    LocalDate temp = subs.getStartDate().plusMonths(3);
+    if (temp.isBefore(subs.getEndDate()))
+      throw new SubscriptionBadReqeustException(Constants.ERR_DATETIME_RANGE,
+          Constants.ERR_MSG_DATETIME_MAX_RANGE);
   }
 
   default List<String> genRange(LocalDate start, LocalDate end,

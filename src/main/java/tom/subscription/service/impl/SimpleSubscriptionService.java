@@ -23,20 +23,16 @@ import tom.subscription.service.SubscriptionService;
 public class SimpleSubscriptionService implements SubscriptionService {
   private static final Logger logger = LoggerFactory.getLogger(SimpleSubscriptionService.class);
   private final ObjectMapper mapper;
-  // private final Map<String, InvoiceDatesGenerator> invoiceDatesGens;
 
   @Autowired
   public SimpleSubscriptionService(ObjectMapper mapper) {
     super();
     this.mapper = mapper;
-    // this.invoiceDatesGens = invoiceDatesGens;
   }
 
   @Override
   public SubscriptionResponse addSubscription(SubscriptionRequest req) {
     SubscriptionEntity subscription = buildEntity(req);
-    // subscription.setInvoiceDates(
-    // invoiceDatesGens.get(subscription.getSubType().toString()).generate(subscription));
     subscription.setInvoiceDates(subscription.getSubType().generate(subscription));
     try {
       logger.info(mapper.writeValueAsString(subscription));

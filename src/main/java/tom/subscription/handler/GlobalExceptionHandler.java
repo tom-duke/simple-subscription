@@ -38,6 +38,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage(), ex.getCode()));
   }
 
+  // Subscription type parse error
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ExceptionResponse> handleIllegalArgument(IllegalArgumentException ex) {
+    return ResponseEntity.badRequest().body(new ExceptionResponse(
+        Constants.ERR_MSG_BAD_SUBSCRIPTION_TYPE, Constants.ERR_BAD_SUBSCRIPTION_TYPE));
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ExceptionResponse> handleGenericException(Exception ex, WebRequest req) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -4,9 +4,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import tom.subscription.Constants;
+import tom.subscription.exception.SubscriptionBadReqeustException;
 import tom.subscription.invoice.InvoiceDatesGenerator;
 import tom.subscription.utils.DateUtil;
 import tom.subscription.utils.ValidationUtil;
@@ -39,7 +42,9 @@ public enum SubscriptionType implements InvoiceDatesGenerator {
 
     @Override
     public void validate(SubscriptionEntity subs) {
-      ValidationUtil.validateDayOfWeek(subs.getDayOfWeekOrMonth());
+      if (!ValidationUtil.validateDayOfWeek(subs.getDayOfWeekOrMonth()))
+        throw new SubscriptionBadReqeustException(Constants.ERR_DATETIME_PARSE,
+            Constants.ERR_MSG_DATETIME_PARSE_ILLEGAL_DAYOFWEEK);
       super.validate(subs);
     }
 
@@ -52,7 +57,15 @@ public enum SubscriptionType implements InvoiceDatesGenerator {
           subs.getStartDate().withDayOfMonth(Integer.parseInt(subs.getDayOfWeekOrMonth()));
       if (issueDate.isBefore(subs.getStartDate()))
         issueDate = issueDate.plusMonths(1);
-      return genRange(issueDate, subs.getEndDate(), (d) -> d.plusMonths(1));
+      // return genRange(issueDate, subs.getEndDate(), (d) -> d.plusMonths(1));
+      List<String> dates = new LinkedList<>();
+      LocalDate temp = LocalDate.from(issueDate);
+      int i = 0;
+      while (temp.isBefore(subs.getEndDate()) || temp.isEqual(subs.getEndDate())) {
+        dates.add(DateUtil.format(temp));
+        temp = issueDate.plusMonths(++i);
+      }
+      return dates;
     }
 
   };
